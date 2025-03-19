@@ -1,13 +1,8 @@
-name: Docker Build and Deploy
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_RAM: 4g  # Increase Docker memory to 4 GB
 
     steps:
     - name: Checkout Code
@@ -20,6 +15,12 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y docker-compose
+    
+    - name: Set Docker Memory Limit
+      run: |
+        sudo sysctl -w vm.max_map_count=262144
+        sudo sysctl -w fs.inotify.max_user_watches=524288
+        sudo sysctl -w fs.file-max=2097152
     
     - name: Build Docker Compose
       run: |
