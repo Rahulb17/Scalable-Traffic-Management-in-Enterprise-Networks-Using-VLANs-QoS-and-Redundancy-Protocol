@@ -25,6 +25,10 @@ jobs:
       run: |
         docker-compose up -d --build
     
+    - name: Link Networks
+      run: |
+        docker network connect scalable-traffic-management-in-enterprise-networks-using-vlans-qos-and-redundancy-protocols_vlan10 client2
+    
     - name: Test Connectivity
       run: |
         docker exec client1 ping -c 4 192.168.20.2
