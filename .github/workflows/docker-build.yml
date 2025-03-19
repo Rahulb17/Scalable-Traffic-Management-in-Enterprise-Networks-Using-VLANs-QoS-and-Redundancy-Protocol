@@ -21,10 +21,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y docker-compose
     
-    - name: Clean Up Existing Networks
-      run: |
-        docker network ls | grep macvlan | awk '{print $2}' | xargs -I {} docker network rm {} || true
-    
     - name: Build Docker Compose
       run: |
         docker-compose up -d --build
