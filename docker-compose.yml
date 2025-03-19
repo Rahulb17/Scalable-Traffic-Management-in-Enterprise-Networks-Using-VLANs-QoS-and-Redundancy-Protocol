@@ -1,0 +1,56 @@
+version: '3.9'
+
+networks:
+  vlan10:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
+          gateway: 192.168.10.1
+  vlan20:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 192.168.20.0/24
+          gateway: 192.168.20.1
+
+services:
+  router1:
+    image: frrouting/frr:latest
+    container_name: router1
+    networks:
+      vlan10:
+        ipv4_address: 192.168.10.1
+      vlan20:
+        ipv4_address: 192.168.20.1
+    volumes:
+      - ./frr/frr.conf:/etc/frr/frr.conf
+
+  keepalived:
+    image: osixia/keepalived:latest
+    container_name: keepalived
+    networks:
+      vlan10:
+        ipv4_address: 192.168.10.254
+    volumes:
+      - ./keepalived/keepalived.conf:/etc/keepalived/keepalived.conf
+
+  client1:
+    build:
+      context: ./client
+    container_name: client1
+    networks:
+      vlan10:
+        ipv4_address: 192.168.10.2
+
+  client2:
+    build:
+      context: ./client
+    container_name: client2
+    networks:
+      vlan20:
+        ipv4_address: 192.168.20.2
