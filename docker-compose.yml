@@ -6,7 +6,7 @@ services:
     container_name: client1
     command: ["ping", "-c", "4", "192.168.20.2"]
     networks:
-      custom_net:
+      vlan10:
         ipv4_address: 192.168.10.2
 
   client2:
@@ -14,13 +14,18 @@ services:
     container_name: client2
     command: ["ping", "-c", "4", "192.168.10.2"]
     networks:
-      custom_net:
+      vlan20:
         ipv4_address: 192.168.20.2
 
 networks:
-  custom_net:
+  vlan10:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.28.0.0/24
-        - subnet: 172.29.0.0/24
+        - subnet: 192.168.10.0/24
+
+  vlan20:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.20.0/24
